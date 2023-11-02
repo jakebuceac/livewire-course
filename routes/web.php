@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\EditPost;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,5 +30,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::view('posts/create', 'posts.create');
+Route::get('post/{post}/edit', EditPost::class);
 
 require __DIR__.'/auth.php';

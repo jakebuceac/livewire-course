@@ -3,10 +3,11 @@
 namespace App\Livewire;
 
 use App\Livewire\Forms\PostForm;
+use App\Models\Post;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
-class CreatePost extends Component
+class EditPost extends Component
 {
     public PostForm $form;
 
@@ -14,13 +15,18 @@ class CreatePost extends Component
 
     public function render(): View
     {
-        return view('livewire.create-post');
+        return view('livewire.edit-post');
     }
 
-    public function save(): void
+    public function mount(Post $post): void
+    {
+        $this->form->setPost($post);
+    }
+
+    public function update(): void
     {
         $this->validate();
-        $this->form->save();
+        $this->form->update();
         $this->success = true;
     }
 }
