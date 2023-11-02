@@ -1,9 +1,3 @@
-<html>
-<body>
-    // ... full layout header
-
+<x-guest-layout>
     <livewire:create-post />
-
-    // ... full layout footer
-</body>
-</html>
+</x-guest-layout>
