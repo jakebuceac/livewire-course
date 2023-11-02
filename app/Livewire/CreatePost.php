@@ -23,4 +23,9 @@ class CreatePost extends Component
         $this->form->save();
         $this->success = true;
     }
+
+    public function validateTitle(): void
+    {
+        $this->validateOnly('form.title');
+    }
 }

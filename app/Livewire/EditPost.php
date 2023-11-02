@@ -29,4 +29,9 @@ class EditPost extends Component
         $this->form->update();
         $this->success = true;
     }
+
+    public function validateTitle(): void
+    {
+        $this->validateOnly('form.title');
+    }
 }
