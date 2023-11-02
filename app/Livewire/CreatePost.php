@@ -28,6 +28,7 @@ class CreatePost extends Component
 
     public function mount(): void
     {
+        // http://localhost/posts/create?post_id={post}
         $post = Post::find(request('post_id'));
         $this->form->post = $post;
         $this->form->title = $post->title;
