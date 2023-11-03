@@ -45,4 +45,21 @@ class ProductsTest extends TestCase
             ->assertSee('product_1')
             ->assertSee('product_2');
     }
+
+    /** @test */
+    public function can_delete_product()
+    {
+        Category::factory()->create();
+
+        $product = Product::factory()->create();
+
+        $this->assertEquals(1, Product::count());
+
+        Livewire::test(Products::class)
+            ->set('name', $product->name)
+            ->set('description', $product->description)
+            ->call('deleteProduct', $product->id);
+
+        $this->assertEquals(0, Product::count());
+    }
 }
