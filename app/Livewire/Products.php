@@ -32,6 +32,11 @@ class Products extends Component
         }
     }
 
+    public function deleteProduct(int $productId): void
+    {
+        Product::whereId($productId)->delete();
+    }
+
     public function render(): View
     {
         sleep(1);
