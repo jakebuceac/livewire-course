@@ -11,7 +11,8 @@
             @endforeach
         </select>
     </div>
-    <div class="min-w-full align-middle">
+    <div class="text-red-600" wire:loading>Loading...</div>
+    <div class="min-w-full align-middle" wire:loading.class="opacity-50">
         <table class="min-w-full divide-y divide-gray-200 border">
             <thead>
             <tr>
