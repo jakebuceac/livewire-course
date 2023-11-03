@@ -30,4 +30,6 @@ Route::middleware('auth')->group(function () {
 
 Route::view('posts/create', 'posts.create');
 
+Route::view('products', 'products.index');
+
 require __DIR__.'/auth.php';
