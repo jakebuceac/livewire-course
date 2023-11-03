@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\ProductsCreate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
 Route::view('posts/create', 'posts.create');
 
-Route::view('products', 'products.index');
+Route::prefix('products')->group(function () {
+    Route::view('/', 'products.index');
+    Route::get('/create', ProductsCreate::class)->name('products.create');
+});
 
 require __DIR__.'/auth.php';

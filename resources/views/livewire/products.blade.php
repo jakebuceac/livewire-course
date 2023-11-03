@@ -1,15 +1,20 @@
 <div class="space-y-6 m-10">
-    <div class="space-x-8">
-        <input wire:model.live="searchQuery" type="search" id="search" placeholder="Search...">
+    <div class="flex justify-between">
+        <div class="space-x-8">
+            <input wire:model.live="searchQuery" type="search" id="search" placeholder="Search...">
 
-        <select wire:model.live="searchCategory" name="category">
-            <option value="0">-- CHOOSE CATEGORY --</option>
-            @foreach($categories as $id => $category)
+            <select wire:model.live="searchCategory" name="category">
+                <option value="0">-- CHOOSE CATEGORY --</option>
+                @foreach($categories as $id => $category)
 
-                <option value="{{ $id }}">{{ $category }}</option>
+                    <option value="{{ $id }}">{{ $category }}</option>
 
-            @endforeach
-        </select>
+                @endforeach
+            </select>
+        </div>
+        <a wire:navigate href="{{ route('products.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
+            Add new product
+        </a>
     </div>
     <div class="text-red-600" wire:loading>Loading...</div>
     <div class="min-w-full align-middle" wire:loading.class="opacity-50">
