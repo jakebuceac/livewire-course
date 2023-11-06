@@ -19,12 +19,20 @@ class ProductsForm extends Form
     #[Rule('required|exists:categories,id', as: 'category')]
     public int $category_id;
 
+    #[Rule('required|string')]
+    public string $colour = '';
+
+    #[Rule('boolean')]
+    public bool $in_stock = true;
+
     public function setProduct(Product $product): void
     {
         $this->product = $product;
         $this->name = $product->name;
         $this->description = $product->description;
         $this->category_id = $product->category_id;
+        $this->colour = $product->colour;
+        $this->in_stock = $product->in_stock;
     }
 
     public function save(): void

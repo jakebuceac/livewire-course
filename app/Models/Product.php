@@ -14,6 +14,14 @@ class Product extends Model
         'name',
         'description',
         'category_id',
+        'colour',
+        'in_stock',
+    ];
+
+    const COLOR_LIST = [
+        'red' => 'Red',
+        'green' => 'Green',
+        'blue' => 'Blue',
     ];
 
     public function category(): BelongsTo
