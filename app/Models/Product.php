@@ -15,6 +15,7 @@ class Product extends Model
         'description',
         'colour',
         'in_stock',
+        'photo',
     ];
 
     const COLOR_LIST = [

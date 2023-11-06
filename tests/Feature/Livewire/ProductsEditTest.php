@@ -6,6 +6,8 @@ use App\Livewire\ProductsEdit;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -57,6 +59,9 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function can_update_product_properties()
     {
+        Storage::fake('public');
+
+        $image = UploadedFile::fake()->image('photo.jpg');
         $categories = Category::factory(2)->create();
         $newCategories = Category::factory(3)->create();
         $product = Product::factory()->create();
@@ -71,6 +76,7 @@ class ProductsEditTest extends TestCase
             ->set('form.description', 'New Description')
             ->set('form.colour', 'Green')
             ->set('form.in_stock', false)
+            ->set('form.image', $image)
             ->set('form.productCategories', $newCategories->pluck('id')->toArray())
             ->assertSet('form.name', 'New Name')
             ->assertSet('form.description', 'New Description')
@@ -93,16 +99,20 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function redirected_to_all_products_after_updating_a_product()
     {
+        Storage::fake('public');
+
+        $image = UploadedFile::fake()->image('photo.jpg');
         $categories = Category::factory(10)->create();
         $product = Product::factory()->create();
 
         $product->categories()->sync($categories->pluck('id'));
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
-            ->set('form.name', 'New Name')
-            ->set('form.description', 'New Description')
-            ->set('form.colour', 'Green')
-            ->set('form.in_stock', false)
+            ->set('form.name', 'Test Name')
+            ->set('form.description', 'Confessions of a serial soaker')
+            ->set('form.colour', 'Red')
+            ->set('form.in_stock', true)
+            ->set('form.image', $image)
             ->set('form.productCategories', [$categories[0]->id])
             ->call('save')
             ->assertRedirect('/products');
@@ -111,17 +121,22 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function fields_are_required()
     {
+        Storage::fake('public');
+
+        $file = UploadedFile::fake()->create('test.txt');
         $product = Product::factory()->create();
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->set('form.name', '')
             ->set('form.description', '')
             ->set('form.colour', '')
+            ->set('form.image', $file)
             ->set('form.productCategories')
             ->call('save')
             ->assertHasErrors('form.name')
             ->assertHasErrors('form.description')
             ->assertHasErrors('form.colour')
+            ->assertHasErrors('form.image')
             ->assertHasErrors('form.productCategories');
     }
 }
