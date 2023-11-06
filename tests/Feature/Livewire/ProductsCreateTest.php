@@ -31,37 +31,42 @@ class ProductsCreateTest extends TestCase
     /** @test */
     public function can_set_product_properties()
     {
-        $this->assertEquals(0, Product::count());
+        $categories = Category::factory()
+            ->count(5)
+            ->create();
 
-        $category = Category::factory()->create();
+        $this->assertEquals(0, Product::count());
 
         Livewire::test(ProductsCreate::class)
             ->set('form.name', 'Test Name')
             ->set('form.description', 'Confessions of a serial soaker')
-            ->set('form.category_id', $category->id)
             ->set('form.colour', 'Red')
             ->set('form.in_stock', true)
+            ->set('form.productCategories', $categories->pluck('id')->toArray())
             ->assertSet('form.name', 'Test Name')
             ->assertSet('form.description', 'Confessions of a serial soaker')
-            ->assertSet('form.category_id', $category->id)
             ->assertSet('form.colour', 'Red')
             ->assertSet('form.in_stock', true)
+            ->assertSet('form.productCategories', $categories->pluck('id')->toArray())
             ->call('save');
 
         $this->assertEquals(1, Product::count());
+        $this->assertDatabaseCount('category_product', 5);
     }
 
     /** @test */
     public function redirected_to_all_products_after_creating_a_product()
     {
-        $category = Category::factory()->create();
+        $categories = Category::factory()
+            ->count(5)
+            ->create();
 
         Livewire::test(ProductsCreate::class)
-            ->set('form.name', 'New Name')
-            ->set('form.description', 'New Description')
-            ->set('form.category_id', $category->id)
+            ->set('form.name', 'Test Name')
+            ->set('form.description', 'Confessions of a serial soaker')
             ->set('form.colour', 'Red')
             ->set('form.in_stock', true)
+            ->set('form.productCategories', $categories->pluck('id')->toArray())
             ->call('save')
             ->assertRedirect('/products');
     }
@@ -72,12 +77,12 @@ class ProductsCreateTest extends TestCase
         Livewire::test(ProductsCreate::class)
             ->set('form.name', '')
             ->set('form.description', '')
-            ->set('form.category_id', '')
             ->set('form.colour', '')
+            ->set('form.productCategories')
             ->call('save')
             ->assertHasErrors('form.name')
             ->assertHasErrors('form.description')
-            ->assertHasErrors('form.category_id')
-            ->assertHasErrors('form.colour');
+            ->assertHasErrors('form.colour')
+            ->assertHasErrors('form.productCategories');
     }
 }

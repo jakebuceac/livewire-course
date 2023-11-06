@@ -14,8 +14,6 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function renders_successfully()
     {
-        Category::factory()->create();
-
         $product = Product::factory()->create();
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
@@ -25,8 +23,6 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function component_exists_on_the_page()
     {
-        Category::factory()->create();
-
         $user = User::factory()->create();
         $product = Product::factory()->create();
 
@@ -38,7 +34,9 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function by_default_sets_a_products_original_properties()
     {
-        $category = Category::factory()->create();
+        Category::factory(10)->create();
+
+        $categories = collect(Category::pluck('id'));
         $product = Product::factory()->create([
             'name' => 'Not New Name',
             'description' => 'Not New Description',
@@ -46,41 +44,45 @@ class ProductsEditTest extends TestCase
             'in_stock' => true,
         ]);
 
+        $product->categories()->sync($categories->random(2));
+
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->assertSet('form.name', 'Not New Name')
             ->assertSet('form.description', 'Not New Description')
-            ->assertSet('form.category_id', $category->id)
             ->assertSet('form.colour', 'Red')
-            ->assertSet('form.in_stock', true);
+            ->assertSet('form.in_stock', true)
+            ->assertSet('form.productCategories', $product->categories()->pluck('id')->toArray());
     }
 
     /** @test */
     public function can_update_product_properties()
     {
-        Category::factory()->create();
-
+        $categories = Category::factory(2)->create();
+        $newCategories = Category::factory(3)->create();
         $product = Product::factory()->create();
-        $newCategory = Category::factory()->create();
+
+        $product->categories()->sync($categories->pluck('id'));
 
         $this->assertEquals(1, Product::count());
+        $this->assertDatabaseCount('category_product', 2);
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->set('form.name', 'New Name')
             ->set('form.description', 'New Description')
-            ->set('form.category_id', $newCategory->id)
             ->set('form.colour', 'Green')
             ->set('form.in_stock', false)
+            ->set('form.productCategories', $newCategories->pluck('id')->toArray())
             ->assertSet('form.name', 'New Name')
             ->assertSet('form.description', 'New Description')
-            ->assertSet('form.category_id', $newCategory->id)
             ->assertSet('form.colour', 'Green')
             ->assertSet('form.in_stock', false)
+            ->assertSet('form.productCategories', $newCategories->pluck('id')->toArray())
             ->call('save');
 
         $this->assertEquals(1, Product::count());
+        $this->assertDatabaseCount('category_product', 3);
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'category_id' => $newCategory->id,
             'name' => 'New Name',
             'description' => 'New Description',
             'colour' => 'Green',
@@ -91,17 +93,17 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function redirected_to_all_products_after_updating_a_product()
     {
-        Category::factory()->create();
-
+        $categories = Category::factory(10)->create();
         $product = Product::factory()->create();
-        $newCategory = Category::factory()->create();
+
+        $product->categories()->sync($categories->pluck('id'));
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->set('form.name', 'New Name')
             ->set('form.description', 'New Description')
-            ->set('form.category_id', $newCategory->id)
             ->set('form.colour', 'Green')
             ->set('form.in_stock', false)
+            ->set('form.productCategories', [$categories[0]->id])
             ->call('save')
             ->assertRedirect('/products');
     }
@@ -109,19 +111,17 @@ class ProductsEditTest extends TestCase
     /** @test */
     public function fields_are_required()
     {
-        Category::factory()->create();
-
         $product = Product::factory()->create();
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->set('form.name', '')
             ->set('form.description', '')
-            ->set('form.category_id', '')
             ->set('form.colour', '')
+            ->set('form.productCategories')
             ->call('save')
             ->assertHasErrors('form.name')
             ->assertHasErrors('form.description')
-            ->assertHasErrors('form.category_id')
-            ->assertHasErrors('form.colour');
+            ->assertHasErrors('form.colour')
+            ->assertHasErrors('form.productCategories');
     }
 }
