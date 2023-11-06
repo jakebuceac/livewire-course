@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Livewire\ProductsCreate;
+use App\Livewire\ProductsEdit;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,7 @@ Route::view('posts/create', 'posts.create');
 Route::prefix('products')->group(function () {
     Route::view('/', 'products.index');
     Route::get('/create', ProductsCreate::class)->name('products.create');
+    Route::get('/{product}/edit', ProductsEdit::class)->name('products.edit');
 });
 
 require __DIR__.'/auth.php';
