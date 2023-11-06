@@ -42,12 +42,16 @@ class ProductsEditTest extends TestCase
         $product = Product::factory()->create([
             'name' => 'Not New Name',
             'description' => 'Not New Description',
+            'colour' => 'Red',
+            'in_stock' => true,
         ]);
 
         Livewire::test(ProductsEdit::class, ['product' => $product])
             ->assertSet('form.name', 'Not New Name')
             ->assertSet('form.description', 'Not New Description')
-            ->assertSet('form.category_id', $category->id);
+            ->assertSet('form.category_id', $category->id)
+            ->assertSet('form.colour', 'Red')
+            ->assertSet('form.in_stock', true);
     }
 
     /** @test */
@@ -64,9 +68,13 @@ class ProductsEditTest extends TestCase
             ->set('form.name', 'New Name')
             ->set('form.description', 'New Description')
             ->set('form.category_id', $newCategory->id)
+            ->set('form.colour', 'Green')
+            ->set('form.in_stock', false)
             ->assertSet('form.name', 'New Name')
             ->assertSet('form.description', 'New Description')
             ->assertSet('form.category_id', $newCategory->id)
+            ->assertSet('form.colour', 'Green')
+            ->assertSet('form.in_stock', false)
             ->call('save');
 
         $this->assertEquals(1, Product::count());
@@ -75,6 +83,8 @@ class ProductsEditTest extends TestCase
             'category_id' => $newCategory->id,
             'name' => 'New Name',
             'description' => 'New Description',
+            'colour' => 'Green',
+            'in_stock' => false,
         ]);
     }
 
@@ -90,6 +100,8 @@ class ProductsEditTest extends TestCase
             ->set('form.name', 'New Name')
             ->set('form.description', 'New Description')
             ->set('form.category_id', $newCategory->id)
+            ->set('form.colour', 'Green')
+            ->set('form.in_stock', false)
             ->call('save')
             ->assertRedirect('/products');
     }
@@ -105,9 +117,11 @@ class ProductsEditTest extends TestCase
             ->set('form.name', '')
             ->set('form.description', '')
             ->set('form.category_id', '')
+            ->set('form.colour', '')
             ->call('save')
             ->assertHasErrors('form.name')
             ->assertHasErrors('form.description')
-            ->assertHasErrors('form.category_id');
+            ->assertHasErrors('form.category_id')
+            ->assertHasErrors('form.colour');
     }
 }
