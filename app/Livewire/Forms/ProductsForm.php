@@ -22,6 +22,9 @@ class ProductsForm extends Form
     #[Rule('boolean')]
     public bool $in_stock = true;
 
+    #[Rule('image')]
+    public $image;
+
     #[Rule('required|array', as: 'category')]
     public array $productCategories = [];
 
@@ -40,7 +43,8 @@ class ProductsForm extends Form
     {
         $this->validate();
 
-        $product = Product::create($this->all());
+        $filename = $this->image->store('products');
+        $product = Product::create($this->all() + ['photo' => $filename]);
 
         $product->categories()->sync($this->productCategories);
     }
@@ -49,7 +53,9 @@ class ProductsForm extends Form
     {
         $this->validate();
 
-        $this->product->update($this->all());
+        $filename = $this->image->store('products', 'public');
+
+        $this->product->update($this->all() + ['photo' => $filename]);
         $this->product->categories()->sync($this->productCategories);
     }
 }
