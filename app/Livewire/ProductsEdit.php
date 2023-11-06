@@ -7,10 +7,10 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
-use Livewire\Component;
 use Livewire\WithFileUploads;
+use LivewireUI\Modal\ModalComponent;
 
-class ProductsEdit extends Component
+class ProductsEdit extends ModalComponent
 {
     use WithFileUploads;
 
@@ -34,6 +34,6 @@ class ProductsEdit extends Component
 
     public function render(): View
     {
-        return view('livewire.products-form');
+        return view('livewire.products-edit');
     }
 }

@@ -33,6 +33,7 @@
                 {{ $slot }}
             </main>
         </div>
+    @livewire('wire-elements-modal')
     @livewireScripts
     </body>
 </html>

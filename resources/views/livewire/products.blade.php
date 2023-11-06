@@ -12,7 +12,7 @@
                 @endforeach
             </select>
         </div>
-        <a wire:navigate href="{{ route('products.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
+        <a wire:click="$dispatch('openModal', { component: 'products-create'})" class="inline-flex items-center px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
             Add new product
         </a>
     </div>
@@ -58,7 +58,7 @@
                         {{ $product->description }}
                     </td>
                     <td>
-                        <a href="{{ route('products.edit', $product) }}" class="inline-flex px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
+                        <a wire:click="$dispatch('openModal', { component: 'products-edit', arguments: { product: {{ $product->id }} }})" href="#" class="inline-flex px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
                             Edit
                         </a>
                         <a wire:click="deleteProduct({{ $product->id }})" wire:confirm="Are you sure?" href="#" class="inline-flex px-4 py-2 bg-red-600 rounded-md font-semibold text-xs text-white uppercase tracking-widest">
